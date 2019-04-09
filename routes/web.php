@@ -13,6 +13,7 @@
 
 Route::get('/', 'ProductsController@index')->name('product.index');
 Route::get('/add-to-cart/{id}','ProductsController@addToCart')->name('product.addToCart');
+Route::get('/shopping-cart','ProductsController@getCart')->name('product.shoppingCart');
 Route::group(['prefix' => 'user'], function() {
     //You can Group By MiddleWare
   /**

@@ -20,7 +20,7 @@ Welcome To ElioLuade Online Market
             <div class="card-body">
                 <div class="clearfix">
                     <div class="float-left price">${{$product->price}}</div>
-                    <a href="#" class="btn btn-success float-right" role="button" >Add To Cart</a>
+                    <a href="{{route('product.addToCart',['id'=>$product->id])}}" class="btn btn-success float-right" role="button" >Add To Cart</a>
                 </div>
             </div>
         </div>
