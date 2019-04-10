@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Cart;
 use App\Product;
 use Session;
+use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use Cartalyst\Stripe\Exception\CardErrorException;
 
 class ProductsController extends Controller {
 
@@ -44,8 +46,44 @@ class ProductsController extends Controller {
         return view('/shop.checkout', ['products' => $cart, 'totalPrice' => $totalPrice]);
     }
 
-    public function checkoutPayment() {
-        
+    public function checkoutPayment(Request $request) {
+
+//        dd($request->all());
+        if (!Session::has('cart')) {
+            return view('shop.shopping-cart');
+        }
+        $oldCart = Session::get('cart');
+        $cartObj = new Cart($oldCart);
+        $cart = $cartObj->items;
+
+        $totalPrice = $cartObj->totalPrice;
+//        $contents=json_encode($cart);
+        $contents = $cartObj->stringifyCart();
+        try {
+            Stripe::charges()->create([
+                'amount' => $totalPrice,
+                'currency' => 'USD',
+                'source' => $request->stripeToken,
+                'description' => 'Order From Elioluade',
+                'receipt_email' => 'tossie79@yahoo.ca',
+                'metadata' => [
+                    'contents' => $contents,
+                    'quantity' => $cartObj->totalQty
+                ]
+            ]); //SUCCESSFUL
+            $request->session()->forget('cart');
+            $request->session()->put('success_message', 'payment successful');
+            return redirect()->route('thankyou');
+        } catch (CardErrorException $e) {
+            return back()->withErrors('Error! ' . $e->getMessage());
+        }
+    }
+
+    public function paymentSuccessFul() {
+        if (!session()->has('success_message')) {
+            return redirect()->route('/');
+        }
+        return view('shop.thankyou')->with('status', 'Thank you! Your Payment Has Been Successfully Accepted!');
     }
 
 }

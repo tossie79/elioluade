@@ -11,11 +11,17 @@
   |
  */
 
+//Shopping Cart Routes
+
 Route::get('/', 'ProductsController@index')->name('product.index');
 Route::get('/add-to-cart/{id}', 'ProductsController@addToCart')->name('product.addToCart');
 Route::get('/shopping-cart', 'ProductsController@getCart')->name('product.shoppingCart');
 Route::get('/checkout', 'ProductsController@getCheckout')->name('checkout');
 Route::post('/checkout', 'ProductsController@checkoutPayment')->name('checkout');
+Route::get('/thankyou', 'ProductsController@paymentSuccessFul')->name('thankyou');
+
+ 
+//Login / Registration Routes
 Route::group(['prefix' => 'user'], function() {
     //You can Group By MiddleWare
     /**

@@ -1,6 +1,6 @@
 (function () {
     // Create a Stripe client.
-    var stripe = Stripe('pk_test_LnqAIGHgKRqfZmUKhyUxJIx000mujttFb7');
+    var stripe = Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
 
 // Create an instance of Elements.
     var elements = stripe.elements();
@@ -46,12 +46,6 @@
     var form = document.getElementById('payment-form');
     form.addEventListener('submit', function (event) {
         event.preventDefault();
-
-        //disable the submit button to prevent repeated clicks when submitting order
-        document.getElementById('submit-order').disabled = true;
-
-
-
         var options = {
             name: document.getElementById('name').value,
             address_line1: document.getElementById('address').value,
@@ -60,14 +54,11 @@
             address_zip: document.getElementById('postcode').value,
         }
 
-        stripe.createToken(card, options).then(function (result) {
+        stripe.createToken(card,options).then(function (result) {
             if (result.error) {
                 // Inform the user if there was an error.
                 var errorElement = document.getElementById('card-errors');
                 errorElement.textContent = result.error.message;
-
-                //enable the submit button
-                document.getElementById('submit-order').disabled = false;
             } else {
                 // Send the token to your server.
                 stripeTokenHandler(result.token);
